@@ -7,6 +7,10 @@ import com.aws.practice_aws.infrastructure.config.properties.ApiProperties;
 import com.aws.practice_aws.infrastructure.in.rest.dto.PersonResponse;
 import com.aws.practice_aws.infrastructure.in.rest.dto.SavePersonRequest;
 import com.aws.practice_aws.infrastructure.in.rest.mapper.PersonRestMapper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -30,6 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("${app.api.paths.base-path}")
 @RequiredArgsConstructor
 @Validated
+@Tag(name = "Personas", description = "Operaciones para crear y consultar personas")
 public class PersonController {
 
     private final SavePersonUseCase savePersonUseCase;
@@ -42,6 +47,12 @@ public class PersonController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @Operation(summary = "Guardar persona", description = "Crea una nueva persona en el sistema")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Persona creada"),
+            @ApiResponse(responseCode = "400", description = "Solicitud invalida"),
+            @ApiResponse(responseCode = "409", description = "La persona ya existe")
+    })
     public ResponseEntity<PersonResponse> savePerson(@Valid @RequestBody SavePersonRequest request,
                                                      UriComponentsBuilder uriBuilder) {
         Person person = personRestMapper.toDomain(request);
@@ -55,6 +66,12 @@ public class PersonController {
     }
 
     @GetMapping(value = "/consultarpersona/{identificationNumber}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Consultar persona", description = "Consulta una persona por numero de identificacion")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Persona encontrada"),
+            @ApiResponse(responseCode = "400", description = "Identificacion invalida"),
+            @ApiResponse(responseCode = "404", description = "Persona no encontrada")
+    })
     public ResponseEntity<PersonResponse> findPerson(
             @PathVariable("identificationNumber")
             @NotBlank(message = "{person.identification.required}")
