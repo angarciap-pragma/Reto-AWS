@@ -1,0 +1,39 @@
+service: users-api-node
+
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: us-east-2
+  stage: dev
+
+functions:
+  getUser:
+    handler: handlers/getUser.handler
+    events:
+      - httpApi:
+          method: GET
+          path: /usuarios/{id}
+
+  createUser:
+    handler: handlers/createUser.handler
+    events:
+      - httpApi:
+          method: POST
+          path: /usuarios
+
+  updateUser:
+    handler: handlers/updateUser.handler
+    events:
+      - httpApi:
+          method: PUT
+          path: /usuarios/{id}
+
+  deleteUser:
+    handler: handlers/deleteUser.handler
+    events:
+      - httpApi:
+          method: DELETE
+          path: /usuarios/{id}
+

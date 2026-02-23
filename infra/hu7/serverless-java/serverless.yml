@@ -1,0 +1,42 @@
+service: users-api-java
+
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: java21
+  region: us-east-2
+  stage: dev
+
+package:
+  artifact: build/libs/users-api-java-all.jar
+
+functions:
+  getUser:
+    handler: com.practice.users.GetUserHandler
+    events:
+      - httpApi:
+          method: GET
+          path: /usuarios/{id}
+
+  createUser:
+    handler: com.practice.users.CreateUserHandler
+    events:
+      - httpApi:
+          method: POST
+          path: /usuarios
+
+  updateUser:
+    handler: com.practice.users.UpdateUserHandler
+    events:
+      - httpApi:
+          method: PUT
+          path: /usuarios/{id}
+
+  deleteUser:
+    handler: com.practice.users.DeleteUserHandler
+    events:
+      - httpApi:
+          method: DELETE
+          path: /usuarios/{id}
+

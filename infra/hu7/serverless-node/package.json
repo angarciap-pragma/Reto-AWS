@@ -1,0 +1,8 @@
+{
+  "name": "users-api-node",
+  "version": "1.0.0",
+  "private": true,
+  "description": "HU7 Node.js lambda API usuarios con Serverless Framework",
+  "license": "UNLICENSED"
+}
+

@@ -1,0 +1,6 @@
+CREATE DATABASE IF NOT EXISTS practice_service;
+
+CREATE USER IF NOT EXISTS 'practice_user'@'%' IDENTIFIED BY 'CHANGE_ME_STRONG_PASSWORD';
+GRANT ALL PRIVILEGES ON practice_service.* TO 'practice_user'@'%';
+
+FLUSH PRIVILEGES;

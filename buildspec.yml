@@ -1,22 +1,8 @@
 version: 0.2
 
 phases:
-  pre_build:
-    commands:
-      - echo Logging in to Amazon ECR...
-      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
-      - REPOSITORY_URI=$ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO
-      - IMAGE_TAG=${IMAGE_TAG:=v1}
   build:
     commands:
-      - echo Build started on `date`
-      - docker build -t $REPOSITORY_URI:$IMAGE_TAG .
-  post_build:
-    commands:
-      - echo Pushing image...
-      - docker push $REPOSITORY_URI:$IMAGE_TAG
-      - printf '[{"name":"practice-aws-api","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
-
-artifacts:
-  files:
-    - imagedefinitions.json
+      - echo Build and push with Jib...
+      - chmod +x gradlew
+      - ./gradlew --no-daemon clean jib -Djib.to.image=$ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$IMAGE_TAG -Djib.to.auth.username=AWS -Djib.to.auth.password=$(aws ecr get-login-password --region $AWS_REGION) -Djib.container.ports=8081

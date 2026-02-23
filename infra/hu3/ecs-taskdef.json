@@ -1,0 +1,47 @@
+{
+  "family": "practice-aws-task",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "512",
+  "memory": "1024",
+  "executionRoleArn": "arn:aws:iam::917714910836:role/ecsTaskExecutionRole",
+  "containerDefinitions": [
+    {
+      "name": "practice-aws-api",
+      "image": "917714910836.dkr.ecr.us-east-2.amazonaws.com/practice-aws-api:v1",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 8081,
+          "hostPort": 8081,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        { "name": "SPRING_PROFILES_ACTIVE", "value": "prod" }
+      ],
+      "secrets": [
+        {
+          "name": "DB_URL",
+          "valueFrom": "/practice/api/DB_URL"
+        },
+        {
+          "name": "DB_USERNAME",
+          "valueFrom": "/practice/api/DB_USERNAME"
+        },
+        {
+          "name": "DB_PASSWORD",
+          "valueFrom": "practice/api/DB_PASSWORD"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/practice-aws-api",
+          "awslogs-region": "us-east-2",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ]
+}
